@@ -23,6 +23,31 @@ export default async ({ req, res, log, error }) => {
     return res.send('Hello, World!');
   }
 
+ // Manejador de solicitud POST
+if (req.method === 'POST') {
+  // Verifica si hay datos en el cuerpo de la solicitud
+  if (!req.body || !Array.isArray(req.body)) {
+      return res.status(400).send('Se esperaba un array de objetos en el cuerpo de la solicitud.');
+  }
+
+  const objectsToInsert = req.body;
+
+  // Inserta cada objeto en la base de datos
+  const insertPromises = objectsToInsert.map(object => {
+      return database.createDocument(collectionId, object, ['*']); // Puedes especificar campos adicionales si es necesario
+  });
+
+  Promise.all(insertPromises)
+      .then((responses) => {
+          console.log('Objetos insertados con éxito:', responses);
+          return res.status(200).json({ message: 'Objetos insertados con éxito', responses });
+      })
+      .catch((error) => {
+          console.error('Error al insertar objetos:', error);
+          return res.status(500).send('Error interno del servidor al insertar objetos.');
+      });
+}
+
   // `res.json()` is a handy helper for sending JSON
   return res.json({
     motto: 'Build like a team of hundreds_',
