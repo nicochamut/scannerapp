@@ -80,24 +80,21 @@ const documentData = {
 function handlePostRequest(req, res) {
   const documentData = req.body; // Suponiendo que estás utilizando Express y has configurado body-parser para parsear el cuerpo de la solicitud como JSON
 
+  const promise = databases.createDocument(
+    '65f8ff0c59be436ec9cb',
+      collectionId,
+      ID.unique(),
+      documentData
+  );
 
-res.send(documentData)
-
-//   const promise = databases.createDocument(
-//     '65f8ff0c59be436ec9cb',
-//       collectionId,
-//       ID.unique(),
-//       documentData
-//   );
-
-//   promise.then(function (response) {
-//       console.log(response);
-//       res.status(200).json({ message: 'Documento creado con éxito', response });
-//   }, function (error) {
-//       console.log(error);
-//       res.status(500).json({ message: 'Error al crear el documento', error });
-//   });
-// }
+  promise.then(function (response) {
+      console.log(response);
+      res.status(200).json({ message: 'Documento creado con éxito', response });
+  }, function (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Error al crear el documento', error });
+  });
+}
 
 module.exports = {
   handlePostRequest
